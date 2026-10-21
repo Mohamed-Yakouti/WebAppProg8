@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Requester Page</title>
+</head>
+<body>
+  <h1>Mohamed El Yakouti uses a fetch request</h1>
+
+  <label for="inputX">Valeur X :</label>
+  <input type="number" id="inputX" value="10"><br><br>
+
+  <label for="inputY">Valeur Y :</label>
+  <input type="number" id="inputY" value="11"><br><br>
+
+  <button onclick="invokeComputation()">Invoke computation on Server</button>
+
+  <br><br>
+  <div id="result">Le résultat s'affichera ici.</div>
+
+  <script>
+    function invokeComputation() {
+      const x = document.getElementById('inputX').value;
+      const y = document.getElementById('inputY').value;
+      const url = `http://127.0.0.1:3001/?x=${x}&y=${y}`;
+
+      fetch(url)
+        .then((resp) => { return resp.text(); })
+        .then((text) => {
+          console.log(text);
+          document.getElementById("result").innerHTML = text;
+        })
+        .catch((error) => {
+          console.error("Erreur:", error);
+          document.getElementById("result").innerHTML = "Erreur de connexion au serveur.";
+        });
+    }
+  </script>
+</body>
+</html>
