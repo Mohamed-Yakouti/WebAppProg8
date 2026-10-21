@@ -3,28 +3,45 @@ const http = require('http');
 const hostname = '127.0.0.1';
 const port = 3001;
 
-const facts = [
-  "Martial arts training improves discipline, cardiovascular health, and core stability.",
-  "Node.js runs on Google Chrome's V8 JavaScript engine, executing code outside the browser.",
-  "The HTTP 200 OK status code indicates that the request has succeeded.",
-  "Asynchronous event-driven architecture allows Node.js to handle many concurrent requests efficiently.",
-  "CORS headers are essential when accessing server endpoints from client-side scripts hosted on different origins."
+// 1. Recipe name starting with 'M' (matches Mohamed)
+const recipeName = "Mohamed's Muffins";
+
+// 2. Array of objects with name, amount, unit
+const ingredients = [
+  { name: "Flour", amount: 2, unit: "cups" },
+  { name: "Sugar", amount: 1, unit: "cup" },
+  { name: "Milk", amount: 1, unit: "cup" },
+  { name: "Butter", amount: 0.5, unit: "cup" },
+  { name: "Vanilla Extract", amount: 1, unit: "tsp" }
 ];
 
 const server = http.createServer((req, res) => {
   res.statusCode = 200;
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
 
-  // Select a random fact from the array
-  const randomFact = facts[Math.floor(Math.random() * facts.length)];
+  // 3. Generate a random index to select an ingredient as "unused"
+  const randomIndex = Math.floor(Math.random() * ingredients.length);
+  
+  // 4. Find the unused ingredient and filter the used ones
+  const unusedIngredient = ingredients[randomIndex];
+  const usedIngredients = ingredients.filter((_, idx) => idx !== randomIndex);
 
-  res.write('<!DOCTYPE html><html><head><meta charset="utf-8"><title>Bonus Fact Server</title></head><body>');
-  res.write('<h1>Mohamed El Yakouti\'s Bonus Fact Generator</h1>');
-  res.write(`<div style="padding: 15px; border: 2px solid #333; background-color: #f0f4f8; font-family: sans-serif; border-radius: 8px; max-width: 500px;">`);
-  res.write(`<h3>Random Fact / Tip:</h3>`);
-  res.write(`<p style="font-size: 16px; color: #1a202c;">${randomFact}</p>`);
-  res.write(`</div>`);
-  res.write('</body></html>');
+  // 5. Build HTML response (Title, Heading, Body, Container elements)
+  res.write('<!DOCTYPE html><html><head><meta charset="utf-8">');
+  res.write(`<title>${recipeName}</title></head><body>`);
+  res.write(`<h1>${recipeName} Recipe Generator</h1>`);
+  
+  res.write('<div style="padding: 15px; border: 2px solid #2b6cb0; border-radius: 8px; font-family: sans-serif; max-width: 500px;">');
+  res.write('<h3>Ingredients Used:</h3><ul>');
+  
+  usedIngredients.forEach(item => {
+    res.write(`<li>${item.amount} ${item.unit} of ${item.name}</li>`);
+  });
+  
+  res.write('</ul>');
+  res.write(`<p style="color: #c53030; font-weight: bold;">Unused Ingredient (Randomly Left Out): ${unusedIngredient.name}</p>`);
+  res.write('</div></body></html>');
+  
   res.end();
 });
 
