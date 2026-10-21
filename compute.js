@@ -4,6 +4,18 @@ const hostname = '127.0.0.1';
 const port = 3001;
 
 const server = http.createServer((req, res) => {
+  // Add CORS headers so the local browser file can talk to the server
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+    res.statusCode = 204;
+    res.end();
+    return;
+  }
+
   const fake_url = "https://fake.com/path" + req.url;
   const url = new URL(fake_url);
   const search_params = url.searchParams;
@@ -12,7 +24,6 @@ const server = http.createServer((req, res) => {
     const x = parseFloat(search_params.get("x")) || 0;
     const y = parseFloat(search_params.get("y")) || 0;
 
-    // Using Math.hypot(x, y) for computation
     const result = Math.hypot(x, y);
 
     res.statusCode = 200;
